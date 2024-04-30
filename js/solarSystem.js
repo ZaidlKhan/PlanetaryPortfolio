@@ -1,5 +1,7 @@
-//Import
 import * as THREE from "https://unpkg.com/three@0.127.0/build/three.module.js";
+import { EffectComposer } from 'https://unpkg.com/three@0.127.0/examples/jsm/postprocessing/EffectComposer.js';
+import { RenderPass } from 'https://unpkg.com/three@0.127.0/examples/jsm/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'https://unpkg.com/three@0.127.0/examples/jsm/postprocessing/UnrealBloomPass.js';
 import { OrbitControls } from "https://unpkg.com/three@0.127.0/examples/jsm/controls/OrbitControls.js";
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -9,7 +11,7 @@ document.body.appendChild(renderer.domElement);
 const textureLoader = new THREE.TextureLoader();
 
 const starTexture = textureLoader.load("./image/stars.jpg");
-const sunTexture = textureLoader.load("./image/sun.jpg");
+const sunTexture = textureLoader.load("./image/sun.jpeg");
 const mercuryTexture = textureLoader.load("./image/mercury.jpg");
 const venusTexture = textureLoader.load("./image/venus.jpg");
 const earthTexture = textureLoader.load("./image/earth.jpg");
@@ -74,6 +76,7 @@ function createStars(count, size) {
 const starField = createStars(10000, 1);
 scene.add(starField);
 
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
 const camera = new THREE.PerspectiveCamera(
   75,
@@ -91,6 +94,7 @@ const sungeo = new THREE.SphereGeometry(15, 50, 50);
 const sunMaterial = new THREE.MeshBasicMaterial({
   map: sunTexture,
 });
+
 const sun = new THREE.Mesh(sungeo, sunMaterial);
 scene.add(sun);
 
@@ -106,9 +110,9 @@ function createLineLoopWithMesh(radius, color = 0x333333, width = 1) {
   const material = new THREE.LineDashedMaterial({
     color: color,
     linewidth: width,
-    scale: 1, // Adjust this value as needed to control the appearance of the dashes
-    dashSize: 0.3, // Length of the dashes
-    gapSize: 0.15, // Length of the gaps between dashes
+    scale: 1, 
+    dashSize: 0.3,
+    gapSize: 0.15, 
     transparent: true,
     opacity: 0.5
   });
@@ -241,17 +245,37 @@ gui.add(options, "speed", 0, maxSpeed?maxSpeed:20);
 //NOTE - animate function
 function animate(time) {
   sun.rotateY(options.speed * 0.004);
+   renderer.clear();
+    renderer.render(scene, camera);
+
+    bloomComposer.render();
   planets.forEach(
     ({ planetObj, planet, rotaing_speed_around_sun, self_rotation_speed }) => {
       planetObj.rotateY(options.speed * rotaing_speed_around_sun);
       planet.rotateY(options.speed * self_rotation_speed);
     }
   );
-  renderer.render(scene, camera);
 }
-
+camera.layers.enable(0);  
+camera.layers.enable(1);  
 camera.far = 10000;
 camera.updateProjectionMatrix();
+
+const renderScene = new RenderPass(scene, camera);
+const bloomPass = new UnrealBloomPass(
+  new THREE.Vector2(window.innerWidth, window.innerHeight), 
+  1.5,
+  0.4,
+  0.85 
+);
+bloomPass.threshold = 0.05;
+bloomPass.strength = 1.5; // Adjust the intensity of glow
+bloomPass.radius = 1;
+
+const bloomComposer = new EffectComposer(renderer);
+bloomComposer.addPass(renderScene);
+bloomComposer.addPass(bloomPass);
+bloomComposer.setSize(window.innerWidth, window.innerHeight);
 
 renderer.setAnimationLoop(animate);
 //NOTE - resize camera view
