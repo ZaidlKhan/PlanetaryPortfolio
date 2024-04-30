@@ -7,7 +7,7 @@ import { OrbitControls } from "https://unpkg.com/three@0.127.0/examples/jsm/cont
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
-
+let activeButton = "home";
 
 const textureLoader = new THREE.TextureLoader();
 const starTexture = textureLoader.load("./image/stars.jpg");
@@ -22,6 +22,8 @@ const uranusTexture = textureLoader.load("./image/uranus.jpg");
 const neptuneTexture = textureLoader.load("./image/neptune.jpg");
 const saturnRingTexture = textureLoader.load("./image/saturn_ring.png");
 const uranusRingTexture = textureLoader.load("./image/uranus_ring.png");
+let mars;
+let enableOrbiting = true;
 
 const scene = new THREE.Scene();
 const cubeTextureLoader = new THREE.CubeTextureLoader();
@@ -82,6 +84,8 @@ const camera = new THREE.PerspectiveCamera(
   0.1,
   1000
 );
+const initialCameraPosition = new THREE.Vector3(-50, 90, 400);  // Example values
+const initialTarget = new THREE.Vector3(0, 0, 0); 
 camera.position.set(-50, 90, 400);
 const orbit = new OrbitControls(camera, renderer.domElement);
 orbit.minPolarAngle = Math.PI / 4; 
@@ -220,35 +224,30 @@ const planets = [
   },
 ];
 
-
-var GUI = dat.gui.GUI;
-const gui = new GUI();
-const options = {
-  "Real view": true,
-  "Show path": true,
-};
-gui.add(options, "Real view").onChange((e) => {
-  ambientLight.intensity = e ? 0 : 0.5;
-});
-gui.add(options, "Show path").onChange((e) => {
-  path_of_planets.forEach((dpath) => {
-    dpath.visible = e;
-  });
+planets.forEach((planet, index) => {
+  if (index === 3) {  
+    mars = planet.planet;
+  }
 });
 
 function animate() {
   sun.rotateY(0.3 * 0.004);
-   renderer.clear();
-    renderer.render(scene, camera);
+  renderer.clear();
+  renderer.render(scene, camera);
+  TWEEN.update();
+  orbit.update();
+  bloomComposer.render();
 
-    bloomComposer.render();
-  planets.forEach(
-    ({ planetObj, planet, rotaing_speed_around_sun, self_rotation_speed }) => {
-      planetObj.rotateY(0.3 * rotaing_speed_around_sun);
-      planet.rotateY(0.3 * self_rotation_speed);
-    }
-  );
+  if (enableOrbiting) {
+      planets.forEach(
+        ({ planetObj, planet, rotaing_speed_around_sun, self_rotation_speed }) => {
+          planetObj.rotateY(0.3 * rotaing_speed_around_sun);
+          planet.rotateY(0.3 * self_rotation_speed);
+        }
+      );
+  }
 }
+
 camera.layers.enable(0);  
 camera.layers.enable(1);  
 camera.far = 10000;
@@ -270,11 +269,120 @@ const bloomComposer = new EffectComposer(renderer);
 bloomComposer.addPass(renderScene);
 bloomComposer.addPass(bloomPass);
 bloomComposer.setSize(window.innerWidth, window.innerHeight);
-
 renderer.setAnimationLoop(animate);
+
 //NOTE - resize camera view
 window.addEventListener("resize", () => {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+  const realViewButton = document.getElementById('realViewButton');
+  const showPathButton = document.getElementById('showPathButton');
+  const aboutMeButton = document.getElementById('aboutMeButton');
+
+  const initialIntensity = sunLight.intensity;
+  const finalIntensity = 1; 
+  const initialSunlightIntensity = 3; 
+  sunLight.intensity = initialSunlightIntensity; 
+
+  //Home Button (reset)
+  document.getElementById('homeButton').addEventListener('click', function() {
+    enableOrbiting = true;
+    if (activeButton === 'home') return;
+    activeButton = 'home';
+    const currentCameraPosition = camera.position.clone();
+    const currentTarget = orbit.target.clone();
+    const currentIntensity = sunLight.intensity;
+
+    const tweenObject = {
+        camX: currentCameraPosition.x,
+        camY: currentCameraPosition.y,
+        camZ: currentCameraPosition.z,
+        targetX: currentTarget.x,
+        targetY: currentTarget.y,
+        targetZ: currentTarget.z,
+        intensity: currentIntensity  
+    };
+
+    new TWEEN.Tween(tweenObject)
+        .to({
+            camX: initialCameraPosition.x,
+            camY: initialCameraPosition.y,
+            camZ: initialCameraPosition.z,
+            targetX: initialTarget.x,
+            targetY: initialTarget.y,
+            targetZ: initialTarget.z,
+            intensity: initialSunlightIntensity  
+        }, 2000)
+        .easing(TWEEN.Easing.Quadratic.InOut)
+        .onUpdate(() => {
+            camera.position.set(tweenObject.camX, tweenObject.camY, tweenObject.camZ);
+            orbit.target.set(tweenObject.targetX, tweenObject.targetY, tweenObject.targetZ);
+            sunLight.intensity = tweenObject.intensity; 
+            orbit.update();
+        })
+        .start();
+  });
+
+  // about me button
+  aboutMeButton.onclick = function() {
+    if (activeButton === 'mars') return;
+    activeButton = 'mars';
+    enableOrbiting = false;
+    const marsPosition = new THREE.Vector3();
+    mars.getWorldPosition(marsPosition); 
+
+    const initialCameraPosition = camera.position.clone();
+    const initialTarget = orbit.target.clone();
+    const offset = new THREE.Vector3(0, 10, 30);
+    const finalCameraPosition = marsPosition.clone().add(offset);
+
+    const tweenObject = {
+        camX: initialCameraPosition.x,
+        camY: initialCameraPosition.y,
+        camZ: initialCameraPosition.z,
+        targetX: initialTarget.x,
+        targetY: initialTarget.y,
+        targetZ: initialTarget.z,
+        intensity: initialIntensity
+    };
+
+    new TWEEN.Tween(tweenObject)
+        .to({
+            camX: finalCameraPosition.x,
+            camY: finalCameraPosition.y,
+            camZ: finalCameraPosition.z,
+            targetX: marsPosition.x,
+            targetY: marsPosition.y,
+            targetZ: marsPosition.z,
+            intensity: finalIntensity
+        }, 2000)
+        .easing(TWEEN.Easing.Quadratic.InOut)
+        .onUpdate(() => {
+            camera.position.set(tweenObject.camX, tweenObject.camY, tweenObject.camZ);
+            orbit.target.set(tweenObject.targetX, tweenObject.targetY, tweenObject.targetZ);
+            camera.lookAt(new THREE.Vector3(tweenObject.targetX, tweenObject.targetY, tweenObject.targetZ));
+            sunLight.intensity = tweenObject.intensity; 
+            orbit.update();
+        })
+        .start();
+  };
+
+  // real view toggle
+  realViewButton.onclick = function() {
+      this.classList.toggle('active');
+      ambientLight.intensity = this.classList.contains('active') ? 0.5 : 0;
+  };
+
+  // show path toggle
+  showPathButton.onclick = function() {
+      this.classList.toggle('active');
+      path_of_planets.forEach(dpath => {
+          dpath.visible = this.classList.contains('active');
+      });
+  };
+
 });

@@ -8,10 +8,17 @@
     <title>Solar System : Explore the 3D Solar System</title>
     <link rel="icon" type="image/png" href="./image/solar-system.png" />
     <script type="text/javascript" src="./min.js/dat.gui.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.js"></script>
   </head>
   <body>
+    <div class="control-panel">
+      <button id="realViewButton" class="toggle-button active">Real View</button>
+      <button id="showPathButton" class="toggle-button active">Show Path</button>
+  </div>
+
     <div class="button-container">
-      <button class="button" onclick="toggleRealView()">about me</button>
+      <button id="homeButton" class="button">home</button>
+      <button id="aboutMeButton" class="button" >about me</button>
       <button class="button" onclick="togglePath()">experince</button>
       <button class="button" onclick="zoomIn()">projects</button>
       <button class="button" onclick="resetView()">skills</button>
