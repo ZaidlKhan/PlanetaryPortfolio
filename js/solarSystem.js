@@ -23,6 +23,8 @@ const neptuneTexture = textureLoader.load("./image/neptune.jpg");
 const saturnRingTexture = textureLoader.load("./image/saturn_ring.png");
 const uranusRingTexture = textureLoader.load("./image/uranus_ring.png");
 let mars;
+let earth;
+let saturn;
 let enableOrbiting = true;
 
 const scene = new THREE.Scene();
@@ -146,20 +148,29 @@ const generatePlanet = (size, planetTexture, x, ring) => {
   const planet = new THREE.Mesh(planetGeometry, planetMaterial);
   const planetObj = new THREE.Object3D();
   planet.position.set(x, 0, 0);
+
   //Start at random angle
   const initialAngle = Math.random() * 2 * Math.PI;
   planetObj.rotation.y = initialAngle;
 
   if (ring) {
       const ringGeo = new THREE.RingGeometry(ring.innerRadius, ring.outerRadius, 32);
-      const ringMat = new THREE.MeshBasicMaterial({
+      const ringMat = new THREE.MeshStandardMaterial({
           map: ring.ringmat,
           side: THREE.DoubleSide,
       });
       const ringMesh = new THREE.Mesh(ringGeo, ringMat);
       planetObj.add(ringMesh);
       ringMesh.position.set(x, 0, 0);
-      ringMesh.rotation.x = -0.5 * Math.PI;
+
+      if (size  == 7.4 ) {
+        ringMesh.rotation.x = -0.5 * Math.PI;
+        ringMesh.rotation.y = -0.1 * Math.PI;
+      } else {
+        ringMesh.rotation.x = -0.1 * Math.PI;
+        ringMesh.rotation.y = -0.1 * Math.PI;
+      }
+    
   }
 
   scene.add(planetObj);
@@ -230,6 +241,19 @@ planets.forEach((planet, index) => {
   }
 });
 
+planets.forEach((planet, index) => {
+  if (index === 2) {  
+    earth = planet.planet;
+  }
+});
+
+planets.forEach((planet, index) => {
+  if (index === 5) {  
+    saturn = planet.planet;
+  }
+});
+
+
 function animate() {
   sun.rotateY(0.3 * 0.004);
   renderer.clear();
@@ -282,9 +306,12 @@ document.addEventListener('DOMContentLoaded', function() {
   const realViewButton = document.getElementById('realViewButton');
   const showPathButton = document.getElementById('showPathButton');
   const aboutMeButton = document.getElementById('aboutMeButton');
+  const experinceButton = document.getElementById('experinceButton');
+  const projectButton = document.getElementById('projectButton');
 
   const initialIntensity = sunLight.intensity;
-  const finalIntensity = 1; 
+  const finalIntensity = 0.8;
+  const saturnIntensity = 0.5; 
   const initialSunlightIntensity = 3; 
   sunLight.intensity = initialSunlightIntensity; 
 
@@ -359,6 +386,138 @@ document.addEventListener('DOMContentLoaded', function() {
             targetY: marsPosition.y,
             targetZ: marsPosition.z,
             intensity: finalIntensity
+        }, 2000)
+        .easing(TWEEN.Easing.Quadratic.InOut)
+        .onUpdate(() => {
+            camera.position.set(tweenObject.camX, tweenObject.camY, tweenObject.camZ);
+            orbit.target.set(tweenObject.targetX, tweenObject.targetY, tweenObject.targetZ);
+            camera.lookAt(new THREE.Vector3(tweenObject.targetX, tweenObject.targetY, tweenObject.targetZ));
+            sunLight.intensity = tweenObject.intensity; 
+            orbit.update();
+        })
+        .start();
+  };
+
+  //experience button
+  experinceButton.onclick = function() {
+    if (activeButton === 'earth') return;
+    activeButton = 'earth';
+    enableOrbiting = false;
+    const earthPosition = new THREE.Vector3();
+    earth.getWorldPosition(earthPosition); 
+
+    const initialCameraPosition = camera.position.clone();
+    const initialTarget = orbit.target.clone();
+    const offset = new THREE.Vector3(0, 10, 30);
+    const finalCameraPosition = earthPosition.clone().add(offset);
+
+    const tweenObject = {
+        camX: initialCameraPosition.x,
+        camY: initialCameraPosition.y,
+        camZ: initialCameraPosition.z,
+        targetX: initialTarget.x,
+        targetY: initialTarget.y,
+        targetZ: initialTarget.z,
+        intensity: initialIntensity
+    };
+
+    new TWEEN.Tween(tweenObject)
+        .to({
+            camX: finalCameraPosition.x,
+            camY: finalCameraPosition.y,
+            camZ: finalCameraPosition.z,
+            targetX: earthPosition.x,
+            targetY: earthPosition.y,
+            targetZ: earthPosition.z,
+            intensity: finalIntensity
+        }, 2000)
+        .easing(TWEEN.Easing.Quadratic.InOut)
+        .onUpdate(() => {
+            camera.position.set(tweenObject.camX, tweenObject.camY, tweenObject.camZ);
+            orbit.target.set(tweenObject.targetX, tweenObject.targetY, tweenObject.targetZ);
+            camera.lookAt(new THREE.Vector3(tweenObject.targetX, tweenObject.targetY, tweenObject.targetZ));
+            sunLight.intensity = tweenObject.intensity; 
+            orbit.update();
+        })
+        .start();
+  };
+
+  //experience button
+  experinceButton.onclick = function() {
+    if (activeButton === 'earth') return;
+    activeButton = 'earth';
+    enableOrbiting = false;
+    const earthPosition = new THREE.Vector3();
+    earth.getWorldPosition(earthPosition); 
+
+    const initialCameraPosition = camera.position.clone();
+    const initialTarget = orbit.target.clone();
+    const offset = new THREE.Vector3(0, 10, 40);
+    const finalCameraPosition = earthPosition.clone().add(offset);
+
+    const tweenObject = {
+        camX: initialCameraPosition.x,
+        camY: initialCameraPosition.y,
+        camZ: initialCameraPosition.z,
+        targetX: initialTarget.x,
+        targetY: initialTarget.y,
+        targetZ: initialTarget.z,
+        intensity: initialIntensity
+    };
+
+    new TWEEN.Tween(tweenObject)
+        .to({
+            camX: finalCameraPosition.x,
+            camY: finalCameraPosition.y,
+            camZ: finalCameraPosition.z,
+            targetX: earthPosition.x,
+            targetY: earthPosition.y,
+            targetZ: earthPosition.z,
+            intensity: finalIntensity
+        }, 2000)
+        .easing(TWEEN.Easing.Quadratic.InOut)
+        .onUpdate(() => {
+            camera.position.set(tweenObject.camX, tweenObject.camY, tweenObject.camZ);
+            orbit.target.set(tweenObject.targetX, tweenObject.targetY, tweenObject.targetZ);
+            camera.lookAt(new THREE.Vector3(tweenObject.targetX, tweenObject.targetY, tweenObject.targetZ));
+            sunLight.intensity = tweenObject.intensity; 
+            orbit.update();
+        })
+        .start();
+  };
+
+  // projects button
+  projectButton.onclick = function() {
+    if (activeButton === 'saturn') return;
+    activeButton = 'saturn';
+    enableOrbiting = false;
+    const saturnPosition = new THREE.Vector3();
+    saturn.getWorldPosition(saturnPosition); 
+
+    const initialCameraPosition = camera.position.clone();
+    const initialTarget = orbit.target.clone();
+    const offset = new THREE.Vector3(0, 20, 75);
+    const finalCameraPosition = saturnPosition.clone().add(offset);
+
+    const tweenObject = {
+        camX: initialCameraPosition.x,
+        camY: initialCameraPosition.y,
+        camZ: initialCameraPosition.z,
+        targetX: initialTarget.x,
+        targetY: initialTarget.y,
+        targetZ: initialTarget.z,
+        intensity: initialIntensity
+    };
+
+    new TWEEN.Tween(tweenObject)
+        .to({
+            camX: finalCameraPosition.x,
+            camY: finalCameraPosition.y,
+            camZ: finalCameraPosition.z,
+            targetX: saturnPosition.x,
+            targetY: saturnPosition.y,
+            targetZ: saturnPosition.z,
+            intensity: saturnIntensity
         }, 2000)
         .easing(TWEEN.Easing.Quadratic.InOut)
         .onUpdate(() => {
