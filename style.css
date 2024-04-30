@@ -1,0 +1,26 @@
+body {
+    overflow: hidden;
+    margin: 0px;
+}
+
+.button-container {
+    position: absolute;
+    top: 15px;
+    left: 20px;
+    z-index: 9999;
+  }
+
+.button {
+    font-size: 15spx;
+    padding: 15px 20px;
+    background-color: transparent;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-left: 5px;
+}
+
+.button:hover {
+    color: #1ecbe1; 
+  }
