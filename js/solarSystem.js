@@ -23,9 +23,64 @@ const neptuneTexture = textureLoader.load("./image/neptune.jpg");
 const saturnRingTexture = textureLoader.load("./image/saturn_ring.png");
 const uranusRingTexture = textureLoader.load("./image/uranus_ring.png");
 let mars;
+let mercury;
 let earth;
 let saturn;
+let venus;
+let neptune;
+let displayContent = false;
 let enableOrbiting = true;
+
+const contentTemplates = {
+  'aboutMe': `
+      <h2>About Me-rcury</h2>
+        <div class="textdiv"> 
+          <img src="./image/profilepic.png" alt="About Me Image" class="profile-pic">
+          <p>Hi! I'm Zaid, a third-year student at the University of British Columbia, where I am pursuing a Bachelor's degree in Computer Science and Public Health. My academic journey is dedicated to blending cutting-edge technology with healthcare to improve systems and patient outcomes.<p>
+          <p>I am deeply passionate about using my skills in software development to create innovative solutions that address the complexities of modern healthcare. Outside of my studies, I am fascinated by space exploration and enjoy spending time with my cat, Binoo, who often keeps me company while I code or catch up on the latest tech news.</p>
+        </div>
+  `,
+  'experience': `
+      <h2>Experiences on Earth</h2>
+      <div class="experience">
+            <div class="textdiv"> 
+            <h3>SWE Intern at Radical AI</h3>
+            <p>Jun 2024 - Present<br>Developed and implemented a robust data automation pipeline using Python and Azure cloud services to <span class="highlight"><strong>extract and transform data from the Starlink API</strong></span>, facilitating real-time network usage tracking in Nunavut. This included designing interactive Power BI dashboards that provided actionable insights to support strategic business decisions.<p>
+            <h3>Network Automation Intern at Qiniq</h3>
+            <p>Mar 2024 - Present<br>Developed and implemented a robust data automation pipeline using Python and Azure cloud services to <span class="highlight"><strong>extract and transform data from the Starlink API</strong></span>, facilitating real-time network usage tracking in Nunavut. This included designing interactive Power BI dashboards that provided actionable insights to support strategic business decisions.<p>
+            </div>
+      </div>
+  `,
+  'projects': `
+      <h2>Projects</h2>
+      <p>Here are some of the projects I've worked on:</p>
+      <a href="link_to_project_1">Project 1</a>
+      <a href="link_to_project_2">Project 2</a>
+  `,
+
+  'skills': `
+      <h2>Saturn Ring's of Skills</h2>
+      <div class="experience"> 
+      <h3>Languages and Databases</h3>
+      <p>Python, Java, HTML/CSS, C/C++, JavaScript, Swift, Oracle, MySQL, MongoDB<p>
+      <h3>Frameworks and Libraries</h3>
+      <p>Numpy, Pandas, Flask, Node.js, Express.js, React.js, Tensorflow, Scikit-learn<p>
+      <h3>Developer Tools</h3>
+      <p>Git, VScode, Microsoft Azure, AWS, Jupyter<p>
+      </div>
+  `,
+  'contact': `
+      <h2>Neptunian Networks</h2>
+      <div class="experience"> 
+      <h3>Languages and Databases</h3>
+      <p>Python, Java, HTML/CSS, C/C++, JavaScript, Swift, Oracle, MySQL, MongoDB<p>
+      <h3>Frameworks and Libraries</h3>
+      <p>Numpy, Pandas, Flask, Node.js, Express.js, React.js, Tensorflow, Scikit-learn<p>
+      <h3>Developer Tools</h3>
+      <p>Git, VScode, Microsoft Azure, AWS, Jupyter<p>
+      </div>
+  `
+};
 
 const scene = new THREE.Scene();
 const cubeTextureLoader = new THREE.CubeTextureLoader();
@@ -229,15 +284,20 @@ const planets = [
     self_rotation_speed: 0.03,
   },
   {
-    ...generatePlanet(4.1, neptuneTexture, 300),
+    ...generatePlanet(5.1, neptuneTexture, 300),
     rotaing_speed_around_sun: 0.0001,
     self_rotation_speed: 0.032,
   },
 ];
+planets.forEach((planet, index) => {
+  if (index === 0) {  
+    mercury = planet.planet;
+  }
+});
 
 planets.forEach((planet, index) => {
-  if (index === 3) {  
-    mars = planet.planet;
+  if (index === 1) {  
+    venus = planet.planet;
   }
 });
 
@@ -248,11 +308,109 @@ planets.forEach((planet, index) => {
 });
 
 planets.forEach((planet, index) => {
+  if (index === 3) {  
+    mars = planet.planet;
+  }
+});
+
+
+planets.forEach((planet, index) => {
   if (index === 5) {  
     saturn = planet.planet;
   }
 });
 
+planets.forEach((planet, index) => {
+  if (index === 7) {  
+    neptune = planet.planet;
+  }
+});
+
+function getPlanetByName(planet) {
+  switch (planet) {
+    case "mercury":
+      return mercury
+    case "venus":
+      return venus
+    case "earth":
+      return earth
+    case "saturn":
+      return saturn
+    case "neptune":
+      return neptune
+  }
+}
+
+//update box content
+function updateContent(sectionKey) {
+  const template = contentTemplates[sectionKey];
+  if (template) {
+      aboutPanel.innerHTML = template;
+      aboutPanel.style.display = 'block';
+  } else {
+      aboutPanel.style.display = 'none';
+  }
+}
+
+//update box-planet line
+function updateLine() {
+  const currentPlanet = toScreenPosition(getPlanetByName(activeButton), camera);
+  const aboutPanel = document.getElementById('aboutPanel');
+  const verticalLine = document.getElementById('verticalLine');
+  const diagonalLine = document.getElementById('diagonalLine');
+  const boxRect = aboutPanel.getBoundingClientRect();
+
+  let verticalLineStartY = currentPlanet.y - 5; 
+  let verticalLineEndY = currentPlanet.y - 40; 
+
+  switch(activeButton) {
+    case "mercury":
+      verticalLineStartY = currentPlanet.y - 2; 
+      verticalLineEndY = currentPlanet.y - 40;
+      break; 
+    case "earth": 
+      verticalLineStartY = currentPlanet.y - 10; 
+      verticalLineEndY = currentPlanet.y - 60;
+      break; 
+    case "venus": 
+      verticalLineStartY = currentPlanet.y - 10; 
+      verticalLineEndY = currentPlanet.y - 60;
+      break; 
+    case "saturn": 
+      verticalLineStartY = currentPlanet.y - 15; 
+      verticalLineEndY = currentPlanet.y - 60;
+      break;
+    case "neptune": 
+      verticalLineStartY = currentPlanet.y - 15; 
+      verticalLineEndY = currentPlanet.y - 60;
+      break;  
+    default:
+      break;
+  }
+  verticalLine.setAttribute('x1', currentPlanet.x);
+  verticalLine.setAttribute('y1', verticalLineStartY);
+  verticalLine.setAttribute('x2', currentPlanet.x);
+  verticalLine.setAttribute('y2', verticalLineEndY);
+
+  diagonalLine.setAttribute('x1', currentPlanet.x);
+  diagonalLine.setAttribute('y1', verticalLineEndY);
+  diagonalLine.setAttribute('x2', boxRect.left + 3.5); 
+  diagonalLine.setAttribute('y2', boxRect.top + 3);
+}
+
+function toScreenPosition(obj, camera) {
+  const vector = new THREE.Vector3();
+  const canvas = renderer.domElement;
+  const { left, top, width, height } = canvas.getBoundingClientRect();
+
+  obj.getWorldPosition(vector);
+  vector.project(camera);
+
+  vector.x = ((vector.x + 1) / 2 * width) + left + 1;
+  vector.y = (-(vector.y - 1) / 2 * height) + top - 30;
+
+  return { x: vector.x, y: vector.y };
+}
 
 function animate() {
   sun.rotateY(0.3 * 0.004);
@@ -261,6 +419,9 @@ function animate() {
   TWEEN.update();
   orbit.update();
   bloomComposer.render();
+  if (displayContent) {
+    updateLine(); 
+  }
 
   if (enableOrbiting) {
       planets.forEach(
@@ -269,6 +430,24 @@ function animate() {
           planet.rotateY(0.3 * self_rotation_speed);
         }
       );
+  }
+}
+
+function manageContentDisplay() {
+  const aboutPanel = document.getElementById('aboutPanel');
+  const infoLine = document.getElementById('verticalLine');
+  const infoLine2 = document.getElementById('diagonalLine');
+
+  if (displayContent) {
+      aboutPanel.style.display = 'block';
+      infoLine.style.visibility = 'visible';
+      infoLine2.style.visibility = 'visible';
+      updateLine();
+  } else {
+    aboutPanel.style.display = 'none';
+    infoLine.style.visibility = 'hidden';
+    infoLine2.style.visibility = 'hidden';
+    updateLine();
   }
 }
 
@@ -307,11 +486,11 @@ document.addEventListener('DOMContentLoaded', function() {
   const showPathButton = document.getElementById('showPathButton');
   const aboutMeButton = document.getElementById('aboutMeButton');
   const experinceButton = document.getElementById('experinceButton');
-  const projectButton = document.getElementById('projectButton');
+  const skillsButton = document.getElementById('skillsButton');
+  const contactButton = document.getElementById('contactButton');
 
-  const initialIntensity = sunLight.intensity;
   const finalIntensity = 0.8;
-  const saturnIntensity = 0.5; 
+  const saturnIntensity = 0.65; 
   const initialSunlightIntensity = 3; 
   sunLight.intensity = initialSunlightIntensity; 
 
@@ -319,6 +498,8 @@ document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('homeButton').addEventListener('click', function() {
     enableOrbiting = true;
     if (activeButton === 'home') return;
+    displayContent = false;
+    manageContentDisplay(); 
     activeButton = 'home';
     const currentCameraPosition = camera.position.clone();
     const currentTarget = orbit.target.clone();
@@ -356,16 +537,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // about me button
   aboutMeButton.onclick = function() {
-    if (activeButton === 'mars') return;
-    activeButton = 'mars';
+    if (activeButton === 'mercury') return;
+    activeButton = 'mercury';
     enableOrbiting = false;
-    const marsPosition = new THREE.Vector3();
-    mars.getWorldPosition(marsPosition); 
+    updateContent('aboutMe');
+    displayContent = false;
+    manageContentDisplay(); 
+    const mercuryPosition = new THREE.Vector3();
+    mercury.getWorldPosition(mercuryPosition); 
 
     const initialCameraPosition = camera.position.clone();
     const initialTarget = orbit.target.clone();
-    const offset = new THREE.Vector3(0, 10, 30);
-    const finalCameraPosition = marsPosition.clone().add(offset);
+    const offset = new THREE.Vector3(0, 10, 25);
+    const finalCameraPosition = mercuryPosition.clone().add(offset);
 
     const tweenObject = {
         camX: initialCameraPosition.x,
@@ -374,7 +558,7 @@ document.addEventListener('DOMContentLoaded', function() {
         targetX: initialTarget.x,
         targetY: initialTarget.y,
         targetZ: initialTarget.z,
-        intensity: initialIntensity
+        intensity: sunLight.intensity
     };
 
     new TWEEN.Tween(tweenObject)
@@ -382,11 +566,11 @@ document.addEventListener('DOMContentLoaded', function() {
             camX: finalCameraPosition.x,
             camY: finalCameraPosition.y,
             camZ: finalCameraPosition.z,
-            targetX: marsPosition.x,
-            targetY: marsPosition.y,
-            targetZ: marsPosition.z,
+            targetX: mercuryPosition.x,
+            targetY: mercuryPosition.y,
+            targetZ: mercuryPosition.z,
             intensity: finalIntensity
-        }, 2000)
+        }, 1000)
         .easing(TWEEN.Easing.Quadratic.InOut)
         .onUpdate(() => {
             camera.position.set(tweenObject.camX, tweenObject.camY, tweenObject.camZ);
@@ -395,49 +579,9 @@ document.addEventListener('DOMContentLoaded', function() {
             sunLight.intensity = tweenObject.intensity; 
             orbit.update();
         })
-        .start();
-  };
-
-  //experience button
-  experinceButton.onclick = function() {
-    if (activeButton === 'earth') return;
-    activeButton = 'earth';
-    enableOrbiting = false;
-    const earthPosition = new THREE.Vector3();
-    earth.getWorldPosition(earthPosition); 
-
-    const initialCameraPosition = camera.position.clone();
-    const initialTarget = orbit.target.clone();
-    const offset = new THREE.Vector3(0, 10, 30);
-    const finalCameraPosition = earthPosition.clone().add(offset);
-
-    const tweenObject = {
-        camX: initialCameraPosition.x,
-        camY: initialCameraPosition.y,
-        camZ: initialCameraPosition.z,
-        targetX: initialTarget.x,
-        targetY: initialTarget.y,
-        targetZ: initialTarget.z,
-        intensity: initialIntensity
-    };
-
-    new TWEEN.Tween(tweenObject)
-        .to({
-            camX: finalCameraPosition.x,
-            camY: finalCameraPosition.y,
-            camZ: finalCameraPosition.z,
-            targetX: earthPosition.x,
-            targetY: earthPosition.y,
-            targetZ: earthPosition.z,
-            intensity: finalIntensity
-        }, 2000)
-        .easing(TWEEN.Easing.Quadratic.InOut)
-        .onUpdate(() => {
-            camera.position.set(tweenObject.camX, tweenObject.camY, tweenObject.camZ);
-            orbit.target.set(tweenObject.targetX, tweenObject.targetY, tweenObject.targetZ);
-            camera.lookAt(new THREE.Vector3(tweenObject.targetX, tweenObject.targetY, tweenObject.targetZ));
-            sunLight.intensity = tweenObject.intensity; 
-            orbit.update();
+        .onComplete(() => {
+          displayContent = true;
+          manageContentDisplay();
         })
         .start();
   };
@@ -446,7 +590,10 @@ document.addEventListener('DOMContentLoaded', function() {
   experinceButton.onclick = function() {
     if (activeButton === 'earth') return;
     activeButton = 'earth';
+    updateContent('experience');
     enableOrbiting = false;
+    displayContent = false;
+    manageContentDisplay(); 
     const earthPosition = new THREE.Vector3();
     earth.getWorldPosition(earthPosition); 
 
@@ -462,7 +609,7 @@ document.addEventListener('DOMContentLoaded', function() {
         targetX: initialTarget.x,
         targetY: initialTarget.y,
         targetZ: initialTarget.z,
-        intensity: initialIntensity
+        intensity: sunLight.intensity
     };
 
     new TWEEN.Tween(tweenObject)
@@ -474,7 +621,7 @@ document.addEventListener('DOMContentLoaded', function() {
             targetY: earthPosition.y,
             targetZ: earthPosition.z,
             intensity: finalIntensity
-        }, 2000)
+        }, 1000)
         .easing(TWEEN.Easing.Quadratic.InOut)
         .onUpdate(() => {
             camera.position.set(tweenObject.camX, tweenObject.camY, tweenObject.camZ);
@@ -483,14 +630,21 @@ document.addEventListener('DOMContentLoaded', function() {
             sunLight.intensity = tweenObject.intensity; 
             orbit.update();
         })
+        .onComplete(() => {
+          displayContent = true;
+          manageContentDisplay();
+       })
         .start();
   };
 
-  // projects button
-  projectButton.onclick = function() {
+  // skills button
+  skillsButton.onclick = function() {
     if (activeButton === 'saturn') return;
     activeButton = 'saturn';
+    updateContent('skills');
     enableOrbiting = false;
+    displayContent = false;
+    manageContentDisplay(); 
     const saturnPosition = new THREE.Vector3();
     saturn.getWorldPosition(saturnPosition); 
 
@@ -506,7 +660,7 @@ document.addEventListener('DOMContentLoaded', function() {
         targetX: initialTarget.x,
         targetY: initialTarget.y,
         targetZ: initialTarget.z,
-        intensity: initialIntensity
+        intensity: sunLight.intensity
     };
 
     new TWEEN.Tween(tweenObject)
@@ -518,7 +672,7 @@ document.addEventListener('DOMContentLoaded', function() {
             targetY: saturnPosition.y,
             targetZ: saturnPosition.z,
             intensity: saturnIntensity
-        }, 2000)
+        }, 1000)
         .easing(TWEEN.Easing.Quadratic.InOut)
         .onUpdate(() => {
             camera.position.set(tweenObject.camX, tweenObject.camY, tweenObject.camZ);
@@ -527,6 +681,61 @@ document.addEventListener('DOMContentLoaded', function() {
             sunLight.intensity = tweenObject.intensity; 
             orbit.update();
         })
+        .onComplete(() => {
+          displayContent = true;
+          manageContentDisplay();
+       })
+        .start();
+  };
+
+  //contact Button
+  contactButton.onclick = function() {
+    if (activeButton === 'neptune') return;
+    activeButton = 'neptune';
+    updateContent('contact');
+    enableOrbiting = false;
+    displayContent = false;
+    manageContentDisplay(); 
+    const neptunePosition = new THREE.Vector3();
+    neptune.getWorldPosition(neptunePosition); 
+
+    const initialCameraPosition = camera.position.clone();
+    const initialTarget = orbit.target.clone();
+    const offset = new THREE.Vector3(0, 20, 55);
+    const finalCameraPosition = neptunePosition.clone().add(offset);
+
+    const tweenObject = {
+        camX: initialCameraPosition.x,
+        camY: initialCameraPosition.y,
+        camZ: initialCameraPosition.z,
+        targetX: initialTarget.x,
+        targetY: initialTarget.y,
+        targetZ: initialTarget.z,
+        intensity: sunLight.intensity
+    };
+
+    new TWEEN.Tween(tweenObject)
+        .to({
+            camX: finalCameraPosition.x,
+            camY: finalCameraPosition.y,
+            camZ: finalCameraPosition.z,
+            targetX: neptunePosition.x,
+            targetY: neptunePosition.y,
+            targetZ: neptunePosition.z,
+            intensity: saturnIntensity
+        }, 1000)
+        .easing(TWEEN.Easing.Quadratic.InOut)
+        .onUpdate(() => {
+            camera.position.set(tweenObject.camX, tweenObject.camY, tweenObject.camZ);
+            orbit.target.set(tweenObject.targetX, tweenObject.targetY, tweenObject.targetZ);
+            camera.lookAt(new THREE.Vector3(tweenObject.targetX, tweenObject.targetY, tweenObject.targetZ));
+            sunLight.intensity = tweenObject.intensity; 
+            orbit.update();
+        })
+        .onComplete(() => {
+          displayContent = true;
+          manageContentDisplay();
+       })
         .start();
   };
 

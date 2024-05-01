@@ -18,17 +18,28 @@
 
   <div id="aboutPanel" style="display: none;">
     <!-- Add your content for the about panel here -->
-    <h2>About Me</h2>
+    <h2>About Me-rcury</h2>
     <p>This is where you can display information about yourself.</p>
   </div>
 
-    <div class="button-container">
+  <div id="experincePanel" style="display: none;">
+    <!-- Add your content for the about panel here -->
+    <h2>Experiences Earth</h2>
+    <p>This is where you can display information about yourself.</p>
+  </div>
+
+  <svg id="infoLine" style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; pointer-events: none; z-index: 10;">
+    <line id="verticalLine" x1="0" y1="0" x2="0" y2="0" style="stroke:#666;stroke-width:0.7" />
+    <line id="diagonalLine" x1="0" y1="0" x2="0" y2="0" style="stroke:#666;stroke-width:0.7" />
+</svg>
+   <div class="button-container">
       <button id="homeButton" class="button">home</button>
       <button id="aboutMeButton" class="button" >about me</button>
       <button id="experinceButton" class="button">experinces</button>
-      <button class="button" onclick="zoomIn()">projects</button>
-      <button id="projectButton" class="button">skills</button>
-      <button class="button" onclick="zoomOut()">contact</button>
+      <button id="projectsButton" class="button">projects</button>
+      <button id="skillsButton" class="button">skills</button>
+      <button class="button" onclick="window.open('https://drive.google.com/file/d/1QSch6uEC_uqD2QouHCmiWclfR1SB-PHD/view?usp=sharing', '_blank');">resume</button>
+      <button id="contactButton" class="button">contact</button>
     </div>
     <script src="./js/solarSystem.js" type="module"></script>
   </body>

@@ -56,3 +56,84 @@ body {
     background-color: #2196F3;
     box-shadow: 0 0 8px #2196F3;
 }
+
+
+#aboutPanel {
+    position: absolute;
+    top: 20%;
+    right: 31%;
+    width: 300px;
+    background: #242424;
+    opacity: 0.9;
+    border-radius: 5px;
+    padding: 0px 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    transform: translateX(100%);
+    transition: transform 0.5s ease-in-out;
+    z-index: 1000;
+    font-family: 'Arial', sans-serif;
+    color: white;
+    min-height: 15%;
+    max-height: 60%;
+    font-size: 14px;
+}
+
+.experience {
+    margin-bottom: 20px;
+}
+
+.experience h3 {
+    margin: 0px 0px 5px 5px; 
+    color: rgb(197, 196, 196);
+    padding: 0px;
+    font-size: 15px;
+}
+
+.experience p {
+    color: #444; 
+    font-size: 14px;
+    line-height: 1.3;
+    padding-top: 0px;
+    margin-top: 0px; 
+}
+
+.highlight {
+    color: rgb(161, 160, 160); 
+}
+
+
+#aboutPanel h2 {
+    padding: 0px 5px;
+    color: rgb(197, 196, 196);
+}
+
+#aboutPanel p, #aboutPanel ul, #aboutPanel a {
+    color: rgb(133, 132, 132);
+    line-height: 1.6;
+    padding: 0px 5px;
+}
+
+#aboutPanel img {
+    max-width: 50%;
+    height: auto;
+    display: block;
+}
+
+.textdiv{
+    max-height: 350px;
+    overflow: auto;
+    color: rgb(133, 132, 132); 
+    font-size: 14px;
+    line-height: 1.3;
+    padding-top: 0px;
+    margin-top: 0px; 
+    border: black;
+}
+
+.profile-pic {
+    display: block;
+    margin: 0 auto; 
+    max-width: 100%;
+    height: auto;
+}
