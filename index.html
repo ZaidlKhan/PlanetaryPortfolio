@@ -4,26 +4,31 @@
     <link rel="stylesheet" href="style.css">
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ZK Portforlio</title>
-    <title>Solar System : Explore the 3D Solar System</title>
+    <title>ZK's Planetary Portfolio</title>
     <link rel="icon" type="image/png" href="./image/solar-system.png" />
     <script type="text/javascript" src="./min.js/dat.gui.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.js"></script>
   </head>
   <body>
     <div class="control-panel">
-      <button id="realViewButton" class="toggle-button active">Real View</button>
-      <button id="showPathButton" class="toggle-button active">Show Path</button>
+      <label class="toggle-control">
+          show orbits
+          <input type="checkbox" id="showOrbitsCheckbox" checked>
+          <span class="slider"></span>
+      </label>
+      <label class="toggle-control">
+          real lighting
+          <input type="checkbox" id="realLightingCheckbox" checked>
+          <span class="slider"></span>
+      </label>
   </div>
-
+  <div id="pageTitle">zaid's planetary portfolio</div>  
   <div id="aboutPanel" style="display: none;">
-    <!-- Add your content for the about panel here -->
     <h2>About Me-rcury</h2>
     <p>This is where you can display information about yourself.</p>
   </div>
 
   <div id="experincePanel" style="display: none;">
-    <!-- Add your content for the about panel here -->
     <h2>Experiences Earth</h2>
     <p>This is where you can display information about yourself.</p>
   </div>
@@ -31,7 +36,7 @@
   <svg id="infoLine" style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; pointer-events: none; z-index: 10;">
     <line id="verticalLine" x1="0" y1="0" x2="0" y2="0" style="stroke:#666;stroke-width:0.7" />
     <line id="diagonalLine" x1="0" y1="0" x2="0" y2="0" style="stroke:#666;stroke-width:0.7" />
-</svg>
+  </svg>
    <div class="button-container">
       <button id="homeButton" class="button">home</button>
       <button id="aboutMeButton" class="button" >about me</button>

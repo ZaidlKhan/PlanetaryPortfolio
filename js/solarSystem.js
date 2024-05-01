@@ -28,6 +28,7 @@ let earth;
 let saturn;
 let venus;
 let neptune;
+let jupiter;
 let displayContent = false;
 let enableOrbiting = true;
 
@@ -51,15 +52,8 @@ const contentTemplates = {
             </div>
       </div>
   `,
-  'projects': `
-      <h2>Projects</h2>
-      <p>Here are some of the projects I've worked on:</p>
-      <a href="link_to_project_1">Project 1</a>
-      <a href="link_to_project_2">Project 2</a>
-  `,
-
   'skills': `
-      <h2>Saturn Ring's of Skills</h2>
+      <h2>Saturnian Skill Set</h2>
       <div class="experience"> 
       <h3>Languages and Databases</h3>
       <p>Python, Java, HTML/CSS, C/C++, JavaScript, Swift, Oracle, MySQL, MongoDB<p>
@@ -67,18 +61,42 @@ const contentTemplates = {
       <p>Numpy, Pandas, Flask, Node.js, Express.js, React.js, Tensorflow, Scikit-learn<p>
       <h3>Developer Tools</h3>
       <p>Git, VScode, Microsoft Azure, AWS, Jupyter<p>
+      <h3>Technical Proficiencies</h3>
+      <p>Data Structures & Algorithms, Operating Systems, Machine Learning, Object-Oriented Programming, Computer Networking, Relational Databases, Unit Testing, Debugging & Troubleshooting</p>
       </div>
   `,
+
   'contact': `
       <h2>Neptunian Networks</h2>
       <div class="experience"> 
-      <h3>Languages and Databases</h3>
-      <p>Python, Java, HTML/CSS, C/C++, JavaScript, Swift, Oracle, MySQL, MongoDB<p>
-      <h3>Frameworks and Libraries</h3>
-      <p>Numpy, Pandas, Flask, Node.js, Express.js, React.js, Tensorflow, Scikit-learn<p>
-      <h3>Developer Tools</h3>
-      <p>Git, VScode, Microsoft Azure, AWS, Jupyter<p>
-      </div>
+      <h3>Email</h3>
+      <p>zkhan1605@gmail.com<p>
+      <h3>Mobile</h3>
+      <p>1-604-313-8533<p>
+      <h3>Social Links</h3>
+      <a href="https://www.linkedin.com/in/zaid-k-2b71b629a/" target="_blank">LinkedIn</a><br>
+      <a href="https://github.com/ZaidlKhan" target="_blank">Github</a>
+  `,
+
+  'projects': `
+      <h2>Jupiter Project Journals</h2>
+      <div class="experience"> 
+      <div class="project-container">
+        <div class="project-card">
+            <a href="https://github.com/ZaidlKhan/ubc_chatbot_frontend1" target="_blank">
+            <img src="./image/justchat.png" alt="Project Image">
+            <div class="overlay">Instagram Messaging App</div>
+          </a>
+        </div>
+
+        <div class="project-card">
+            <a href="https://yourwebsite.com" target="_blank">
+            <img src="./image/justchat.png" alt="Project Image">
+            <div class="overlay">Instagram Messaging App</div>
+          </a>
+        </div>
+        <!-- Repeat for each project -->
+    </div>
   `
 };
 
@@ -246,7 +264,7 @@ const planets = [
     self_rotation_speed: 0.004,
   },
   {
-    ...generatePlanet(3.4, venusTexture, 75),
+    ...generatePlanet(3.4, venusTexture, 70),
     rotaing_speed_around_sun: 0.015,
     self_rotation_speed: 0.002,
   },
@@ -313,6 +331,11 @@ planets.forEach((planet, index) => {
   }
 });
 
+planets.forEach((planet, index) => {
+  if (index === 4) {  
+    jupiter = planet.planet;
+  }
+});
 
 planets.forEach((planet, index) => {
   if (index === 5) {  
@@ -338,6 +361,8 @@ function getPlanetByName(planet) {
       return saturn
     case "neptune":
       return neptune
+    case "jupiter":
+      return jupiter
   }
 }
 
@@ -383,7 +408,12 @@ function updateLine() {
     case "neptune": 
       verticalLineStartY = currentPlanet.y - 15; 
       verticalLineEndY = currentPlanet.y - 60;
+      break;
+    case "jupiter": 
+      verticalLineStartY = currentPlanet.y - 25; 
+      verticalLineEndY = currentPlanet.y - 60;
       break;  
+
     default:
       break;
   }
@@ -474,6 +504,7 @@ bloomComposer.addPass(bloomPass);
 bloomComposer.setSize(window.innerWidth, window.innerHeight);
 renderer.setAnimationLoop(animate);
 
+
 //NOTE - resize camera view
 window.addEventListener("resize", () => {
   camera.aspect = window.innerWidth / window.innerHeight;
@@ -482,12 +513,14 @@ window.addEventListener("resize", () => {
 });
 
 document.addEventListener('DOMContentLoaded', function() {
-  const realViewButton = document.getElementById('realViewButton');
-  const showPathButton = document.getElementById('showPathButton');
+  const showOrbitsCheckbox = document.getElementById('showOrbitsCheckbox');
+  const realLightingCheckbox = document.getElementById('realLightingCheckbox');
+  const homeButton = document.getElementById('homeButton')
   const aboutMeButton = document.getElementById('aboutMeButton');
   const experinceButton = document.getElementById('experinceButton');
   const skillsButton = document.getElementById('skillsButton');
   const contactButton = document.getElementById('contactButton');
+  const projectsButton = document.getElementById('projectsButton');
 
   const finalIntensity = 0.8;
   const saturnIntensity = 0.65; 
@@ -495,7 +528,7 @@ document.addEventListener('DOMContentLoaded', function() {
   sunLight.intensity = initialSunlightIntensity; 
 
   //Home Button (reset)
-  document.getElementById('homeButton').addEventListener('click', function() {
+  homeButton.addEventListener('click', function() {
     enableOrbiting = true;
     if (activeButton === 'home') return;
     displayContent = false;
@@ -524,7 +557,7 @@ document.addEventListener('DOMContentLoaded', function() {
             targetY: initialTarget.y,
             targetZ: initialTarget.z,
             intensity: initialSunlightIntensity  
-        }, 2000)
+        }, 1000)
         .easing(TWEEN.Easing.Quadratic.InOut)
         .onUpdate(() => {
             camera.position.set(tweenObject.camX, tweenObject.camY, tweenObject.camZ);
@@ -573,6 +606,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 1000)
         .easing(TWEEN.Easing.Quadratic.InOut)
         .onUpdate(() => {
+            homeButton.disabled = true;
             camera.position.set(tweenObject.camX, tweenObject.camY, tweenObject.camZ);
             orbit.target.set(tweenObject.targetX, tweenObject.targetY, tweenObject.targetZ);
             camera.lookAt(new THREE.Vector3(tweenObject.targetX, tweenObject.targetY, tweenObject.targetZ));
@@ -580,6 +614,7 @@ document.addEventListener('DOMContentLoaded', function() {
             orbit.update();
         })
         .onComplete(() => {
+          homeButton.disabled = false;
           displayContent = true;
           manageContentDisplay();
         })
@@ -624,6 +659,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 1000)
         .easing(TWEEN.Easing.Quadratic.InOut)
         .onUpdate(() => {
+            homeButton.disabled = true;
             camera.position.set(tweenObject.camX, tweenObject.camY, tweenObject.camZ);
             orbit.target.set(tweenObject.targetX, tweenObject.targetY, tweenObject.targetZ);
             camera.lookAt(new THREE.Vector3(tweenObject.targetX, tweenObject.targetY, tweenObject.targetZ));
@@ -631,6 +667,7 @@ document.addEventListener('DOMContentLoaded', function() {
             orbit.update();
         })
         .onComplete(() => {
+          homeButton.disabled = false;
           displayContent = true;
           manageContentDisplay();
        })
@@ -675,6 +712,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 1000)
         .easing(TWEEN.Easing.Quadratic.InOut)
         .onUpdate(() => {
+            homeButton.disabled = true;
             camera.position.set(tweenObject.camX, tweenObject.camY, tweenObject.camZ);
             orbit.target.set(tweenObject.targetX, tweenObject.targetY, tweenObject.targetZ);
             camera.lookAt(new THREE.Vector3(tweenObject.targetX, tweenObject.targetY, tweenObject.targetZ));
@@ -682,6 +720,60 @@ document.addEventListener('DOMContentLoaded', function() {
             orbit.update();
         })
         .onComplete(() => {
+          homeButton.disabled = false;
+          displayContent = true;
+          manageContentDisplay();
+       })
+        .start();
+  };
+
+  //project button
+  projectsButton.onclick = function() {
+    if (activeButton === 'jupiter') return;
+    activeButton = 'jupiter';
+    updateContent('projects');
+    enableOrbiting = false;
+    displayContent = false;
+    manageContentDisplay(); 
+    const jupiterPosition = new THREE.Vector3();
+    jupiter.getWorldPosition(jupiterPosition); 
+
+    const initialCameraPosition = camera.position.clone();
+    const initialTarget = orbit.target.clone();
+    const offset = new THREE.Vector3(0, 20, 75);
+    const finalCameraPosition = jupiterPosition.clone().add(offset);
+
+    const tweenObject = {
+        camX: initialCameraPosition.x,
+        camY: initialCameraPosition.y,
+        camZ: initialCameraPosition.z,
+        targetX: initialTarget.x,
+        targetY: initialTarget.y,
+        targetZ: initialTarget.z,
+        intensity: sunLight.intensity
+    };
+
+    new TWEEN.Tween(tweenObject)
+        .to({
+            camX: finalCameraPosition.x,
+            camY: finalCameraPosition.y,
+            camZ: finalCameraPosition.z,
+            targetX: jupiterPosition.x,
+            targetY: jupiterPosition.y,
+            targetZ: jupiterPosition.z,
+            intensity: saturnIntensity
+        }, 1000)
+        .easing(TWEEN.Easing.Quadratic.InOut)
+        .onUpdate(() => {
+            homeButton.disabled = true;
+            camera.position.set(tweenObject.camX, tweenObject.camY, tweenObject.camZ);
+            orbit.target.set(tweenObject.targetX, tweenObject.targetY, tweenObject.targetZ);
+            camera.lookAt(new THREE.Vector3(tweenObject.targetX, tweenObject.targetY, tweenObject.targetZ));
+            sunLight.intensity = tweenObject.intensity; 
+            orbit.update();
+        })
+        .onComplete(() => {
+          homeButton.disabled = false;
           displayContent = true;
           manageContentDisplay();
        })
@@ -726,6 +818,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 1000)
         .easing(TWEEN.Easing.Quadratic.InOut)
         .onUpdate(() => {
+            homeButton.disabled = true;
             camera.position.set(tweenObject.camX, tweenObject.camY, tweenObject.camZ);
             orbit.target.set(tweenObject.targetX, tweenObject.targetY, tweenObject.targetZ);
             camera.lookAt(new THREE.Vector3(tweenObject.targetX, tweenObject.targetY, tweenObject.targetZ));
@@ -733,24 +826,23 @@ document.addEventListener('DOMContentLoaded', function() {
             orbit.update();
         })
         .onComplete(() => {
+          homeButton.disabled = false;
           displayContent = true;
           manageContentDisplay();
        })
         .start();
   };
 
-  // real view toggle
-  realViewButton.onclick = function() {
-      this.classList.toggle('active');
-      ambientLight.intensity = this.classList.contains('active') ? 0.5 : 0;
-  };
-
   // show path toggle
-  showPathButton.onclick = function() {
-      this.classList.toggle('active');
-      path_of_planets.forEach(dpath => {
-          dpath.visible = this.classList.contains('active');
-      });
-  };
+  showOrbitsCheckbox.addEventListener('change', function() {
+    path_of_planets.forEach(dpath => {
+        dpath.visible = this.checked; 
+    });
+  });
+
+  realLightingCheckbox.addEventListener('change', function() {
+    this.classList.toggle('active');
+    ambientLight.intensity = this.classList.contains('active') ? 0.5 : 0;
+});
 
 });
