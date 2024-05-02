@@ -390,28 +390,24 @@ function updateLine() {
 
   switch(activeButton) {
     case "mercury":
-      verticalLineStartY = currentPlanet.y - 2; 
-      verticalLineEndY = currentPlanet.y - 40;
+      verticalLineStartY = currentPlanet.y - 20; 
+      verticalLineEndY = currentPlanet.y - 60;
       break; 
     case "earth": 
-      verticalLineStartY = currentPlanet.y - 10; 
-      verticalLineEndY = currentPlanet.y - 60;
-      break; 
-    case "venus": 
-      verticalLineStartY = currentPlanet.y - 10; 
-      verticalLineEndY = currentPlanet.y - 60;
-      break; 
+      verticalLineStartY = currentPlanet.y - 33; 
+      verticalLineEndY = currentPlanet.y - 70;
+      break;
     case "saturn": 
-      verticalLineStartY = currentPlanet.y - 15; 
-      verticalLineEndY = currentPlanet.y - 60;
+      verticalLineStartY = currentPlanet.y - 40; 
+      verticalLineEndY = currentPlanet.y - 80;
       break;
     case "neptune": 
-      verticalLineStartY = currentPlanet.y - 15; 
-      verticalLineEndY = currentPlanet.y - 60;
+      verticalLineStartY = currentPlanet.y - 30; 
+      verticalLineEndY = currentPlanet.y - 70;
       break;
     case "jupiter": 
-      verticalLineStartY = currentPlanet.y - 25; 
-      verticalLineEndY = currentPlanet.y - 60;
+      verticalLineStartY = currentPlanet.y - 50; 
+      verticalLineEndY = currentPlanet.y - 100;
       break;  
 
     default:
@@ -421,6 +417,7 @@ function updateLine() {
   verticalLine.setAttribute('y1', verticalLineStartY);
   verticalLine.setAttribute('x2', currentPlanet.x);
   verticalLine.setAttribute('y2', verticalLineEndY);
+  verticalLine.setAttribute("z", 100)
 
   diagonalLine.setAttribute('x1', currentPlanet.x);
   diagonalLine.setAttribute('y1', verticalLineEndY);
