@@ -80,21 +80,45 @@ const contentTemplates = {
 
   'projects': `
       <h2>Jupiter Project Journals</h2>
-      <div class="experience"> 
+      <div class="textdiv"> 
       <div class="project-container">
         <div class="project-card">
-            <a href="https://github.com/ZaidlKhan/ubc_chatbot_frontend1" target="_blank">
             <img src="./image/justchat.png" alt="Project Image">
             <div class="overlay">Instagram Messaging App</div>
-          </a>
         </div>
 
         <div class="project-card">
-            <a href="https://yourwebsite.com" target="_blank">
-            <img src="./image/justchat.png" alt="Project Image">
-            <div class="overlay">Instagram Messaging App</div>
-          </a>
+            <img src="./image/saturn-pro.jpg" alt="Project Image">
+            <div class="overlay">Planetary Portfolio</div>
         </div>
+
+        <div class="project-card">
+            <img src="./image/chatbot.png" alt="Project Image">
+            <div class="overlay">UBC Science Chatbot</div>
+        </div>
+
+        <div class="project-card">
+            <img src="./image/ball.webp" alt="Project Image">
+            <div class="overlay">Basketball League Database</div>
+        </div>
+
+        <div class="project-card">
+            <img src="./image/greek.webp" alt="Project Image">
+            <div class="overlay">Greek Handwriting Recognition</div>
+        </div>
+
+        <div class="project-card">
+            <img src="./image/snake.png" alt="Project Image">
+            <div class="overlay">Intelligent Snake</div>
+        </div>
+
+        <div class="project-card">
+            <img src="./image/maze.jpg" alt="Project Image">
+            <div class="overlay">Maze Solver</div>
+        </div>
+
+      </div>
+
         <!-- Repeat for each project -->
     </div>
   `
@@ -212,6 +236,29 @@ function createLineLoopWithMesh(radius, color = 0x333333, width = 1) {
   scene.add(lineLoop);
   path_of_planets.push(lineLoop);
 }
+
+var modal = document.getElementById("projectModal");
+
+var span = document.getElementsByClassName("close")[0];
+
+document.querySelectorAll('.project-card').forEach(item => {
+    item.addEventListener('click', function() {
+        modal.style.display = "block";
+    });
+});
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+    modal.style.display = "none";
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
+
 
 const generatePlanet = (size, planetTexture, x, ring) => {
   const planetGeometry = new THREE.SphereGeometry(size, 50, 50);
