@@ -82,22 +82,36 @@ const contentTemplates = {
       <h2>Jupiter Project Journals</h2>
       <div class="textdiv"> 
       <div class="project-container">
-        <div class="project-card">
-            <img src="./image/justchat.png" alt="Project Image">
-            <div class="overlay">Instagram Messaging App</div>
-        </div>
+      <div class="project-card" data-title="Instagram Messaging App" 
+                                data-description="A real-time messaging app for social media." 
+                                data-techStack="React, Node.js, Socket.io" 
+                                data-githubUrl="https://github.com/yourusername/instagram-messaging">
+          <img src="./image/justchat.png" alt="Project Image">
+          <div class="overlay">Instagram Messaging App</div>
+      </div>
 
-        <div class="project-card">
+        <div class="project-card" data-title="Planetary Portfolio" 
+                                  data-description="A real-time messaging app for social media." 
+                                  data-techStack="Three.js, HTML, CSS" 
+                                  data-githubUrl="https://github.com/yourusername/instagram-messaging">
             <img src="./image/saturn-pro.jpg" alt="Project Image">
             <div class="overlay">Planetary Portfolio</div>
         </div>
 
-        <div class="project-card">
+        <div class="project-card" data-title="UBC Science Chatbot" 
+                                  data-description="Developed a specialized chatbot service for UBC undergraduate science students to address academic queries and concerns effectively. Leveraging OpenAI's API, I crafted a custom assistant designed to provide tailored support. The frontend was built using React.js, creating a user-friendly and responsive interface. On the backend, I designed and implemented a REST API using Node.js and Express.js, which handles all communications between the frontend and the server. 
+                                  &lt;br&gt;This was my first published full-stack project, from which I gained valuble insights into both front-end and back-end development. It was a challenging yet rewarding experience that significantly improved my development skills." 
+                                  data-techStack="OpenAI API, Node.js, React.js, Express.js, MongoDB, HTML/CSS"
+                                  data-githubUrl="https://github.com/ZaidlKhan/ubc_chatbot_frontend1">
             <img src="./image/chatbot.png" alt="Project Image">
             <div class="overlay">UBC Science Chatbot</div>
         </div>
 
-        <div class="project-card">
+        <div class="project-card" data-title="Basketball League Database" 
+                                  data-description="This project was developed for CPSC 304: Introduction to Relational Databases, where I had to build a full stack application with an Oracle database to manage various aspects of a basketball league including player statistics, team management, and game schedules. 
+                                  &lt;br&gt;As a huge basketball fan, this project was particularly exciting as it allowed me to apply the fundamentals of relational databases to something I am passionate about. I gained hands-on experience in constructing and querying databases, which enhanced my understanding of database design principles and SQL." 
+                                  data-techStack="Java, SQL, Oracle" 
+                                  data-githubUrl="https://github.com/ZaidlKhan/basketball_database">
             <img src="./image/ball.webp" alt="Project Image">
             <div class="overlay">Basketball League Database</div>
         </div>
@@ -419,12 +433,76 @@ function updateContent(sectionKey) {
   if (template) {
       aboutPanel.innerHTML = template;
       aboutPanel.style.display = 'block';
+      if (sectionKey == "projects") {
+        setupProjectListeners();
+      } 
   } else {
       aboutPanel.style.display = 'none';
   }
 }
 
-//update box-planet line
+let currentProjectIndex = 0; 
+let projects = []; 
+
+function setupProjectListeners() {
+    projects = Array.from(document.querySelectorAll('.project-card')).map(card => ({
+        title: card.getAttribute('data-title'),
+        description: card.getAttribute('data-description'),
+        techStack: card.getAttribute('data-techStack'),
+        githubUrl: card.getAttribute('data-githubUrl')
+    }));
+
+    document.querySelectorAll('.project-card').forEach((card, index) => {
+        card.removeEventListener('click', handleProjectClick);
+        card.addEventListener('click', () => handleProjectClick(index));
+    });
+}
+
+function handleProjectClick(index) {
+    currentProjectIndex = index;
+    openModal(projects[index]);
+}
+
+function openModal(project) {
+  const modalContent = document.getElementById('projectModal');
+  const modalDetails = document.querySelector('.modal-content');
+
+  function updateDetails() {
+      document.getElementById('projectTitle').textContent = project.title;
+      document.getElementById('projectDescription').innerHTML = project.description.replace(/&lt;br&gt;/g, '<br>');
+      document.getElementById('projectTechStack').textContent = project.techStack;
+      document.getElementById('projectLink').href = project.githubUrl;
+      modalDetails.style.opacity = '1';
+  }
+
+  if (modalContent.style.display === "flex") {
+      modalDetails.style.opacity = '0';
+
+      modalDetails.addEventListener('transitionend', function handleFadeOut() {
+          updateDetails();
+          modalDetails.removeEventListener('transitionend', handleFadeOut);
+      }, {once: true});
+  } else {
+      modalContent.style.display = "flex"; 
+      updateDetails();
+  }
+}
+
+
+document.querySelector('.nav-arrow.left').addEventListener('click', () => {
+    if (currentProjectIndex > 0) {
+        currentProjectIndex -= 1;
+        openModal(projects[currentProjectIndex]);
+    }
+});
+
+document.querySelector('.nav-arrow.right').addEventListener('click', () => {
+    if (currentProjectIndex < projects.length - 1) {
+        currentProjectIndex += 1;
+        openModal(projects[currentProjectIndex]);
+    }
+});
+
 function updateLine() {
   const currentPlanet = toScreenPosition(getPlanetByName(activeButton), camera);
   const aboutPanel = document.getElementById('aboutPanel');
@@ -611,6 +689,7 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .start();
   });
+  
 
   // about me button
   aboutMeButton.onclick = function() {
