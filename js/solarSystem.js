@@ -45,10 +45,11 @@ const contentTemplates = {
       <h2>Experiences on Earth</h2>
       <div class="experience">
             <div class="textdiv"> 
-            <h3>SWE Intern at Radical AI</h3>
-            <p>Jun 2024 - Present<br>Developed and implemented a robust data automation pipeline using Python and Azure cloud services to <span class="highlight"><strong>extract and transform data from the Starlink API</strong></span>, facilitating real-time network usage tracking in Nunavut. This included designing interactive Power BI dashboards that provided actionable insights to support strategic business decisions.<p>
-            <h3>Network Automation Intern at Qiniq</h3>
-            <p>Mar 2024 - Present<br>Developed and implemented a robust data automation pipeline using Python and Azure cloud services to <span class="highlight"><strong>extract and transform data from the Starlink API</strong></span>, facilitating real-time network usage tracking in Nunavut. This included designing interactive Power BI dashboards that provided actionable insights to support strategic business decisions.<p>
+            <h3>Provincial Health Services Authority</h3>
+            <p>Aug 2024 - Present<br>
+            Developed and maintained Web APIs using ASP.NET Web API, SharePoint REST API, SQL Server, and Entity Framework to ensure seamless integration, high-performance database management, and effective content collaboration within clinical applications.<p>
+            <h3>Data Engineering Intern at Qiniq</h3>
+            <p>Apr 2024 - Aug 2024<br>Developed and implemented a robust data automation pipeline using Python and Azure cloud services to <span class="highlight"><strong>extract and transform data from the Starlink API</strong></span>, facilitating real-time network usage tracking in Nunavut. This included designing interactive Power BI dashboards that provided actionable insights to support strategic business decisions.<p>
             </div>
       </div>
   `,
@@ -70,7 +71,7 @@ const contentTemplates = {
       <h2>Neptunian Networks</h2>
       <div class="experience"> 
       <h3>Email</h3>
-      <p>zkhan1605@gmail.com<p>
+      <p>zkhan07@student.ubc.ca<p>
       <h3>Mobile</h3>
       <p>1-604-313-8533<p>
       <h3>Social Links</h3>
@@ -587,19 +588,31 @@ function animate() {
 
 function manageContentDisplay() {
   const aboutPanel = document.getElementById('aboutPanel');
-  const infoLine = document.getElementById('verticalLine');
-  const infoLine2 = document.getElementById('diagonalLine');
+  const controlPanel = document.querySelector('.control-panel');
+  const isSmallScreen = window.innerWidth <= 800;
 
-  if (displayContent) {
-      aboutPanel.style.display = 'block';
-      infoLine.style.visibility = 'visible';
-      infoLine2.style.visibility = 'visible';
-      updateLine();
+  if (isSmallScreen) {
+    // Hide the control panel
+    if (controlPanel) {
+      controlPanel.style.display = 'none';
+    }
+    // Slide up the about panel
+    aboutPanel.classList.toggle('show', displayContent);
   } else {
-    aboutPanel.style.display = 'none';
-    infoLine.style.visibility = 'hidden';
-    infoLine2.style.visibility = 'hidden';
-    updateLine();
+    // Show the control panel
+    if (controlPanel) {
+      controlPanel.style.display = 'flex';
+    }
+    if (displayContent) {
+      aboutPanel.style.display = 'block';
+      document.getElementById('verticalLine').style.visibility = 'visible';
+      document.getElementById('diagonalLine').style.visibility = 'visible';
+      updateLine();
+    } else {
+      aboutPanel.style.display = 'none';
+      document.getElementById('verticalLine').style.visibility = 'hidden';
+      document.getElementById('diagonalLine').style.visibility = 'hidden';
+    }
   }
 }
 
@@ -969,3 +982,140 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 });
+
+
+function handlePlanetButtonClick(planetName, contentKey, cameraOffset, finalIntensity) {
+  activeButton = planetName;
+  enableOrbiting = false;
+  updateContent(contentKey);
+  displayContent = false;
+  manageContentDisplay();
+
+  const planetPosition = new THREE.Vector3();
+  getPlanetByName(planetName).getWorldPosition(planetPosition);
+
+  const initialCameraPosition = camera.position.clone();
+  const initialTarget = orbit.target.clone();
+  const finalCameraPosition = planetPosition.clone().add(cameraOffset);
+
+  const tweenObject = {
+    camX: initialCameraPosition.x,
+    camY: initialCameraPosition.y,
+    camZ: initialCameraPosition.z,
+    targetX: initialTarget.x,
+    targetY: initialTarget.y,
+    targetZ: initialTarget.z,
+    intensity: sunLight.intensity
+  };
+
+  new TWEEN.Tween(tweenObject)
+    .to({
+      camX: finalCameraPosition.x,
+      camY: finalCameraPosition.y,
+      camZ: finalCameraPosition.z,
+      targetX: planetPosition.x,
+      targetY: planetPosition.y,
+      targetZ: planetPosition.z,
+      intensity: finalIntensity
+    }, 1000)
+    .easing(TWEEN.Easing.Quadratic.InOut)
+    .onUpdate(() => {
+      homeButton.disabled = true;
+      camera.position.set(tweenObject.camX, tweenObject.camY, tweenObject.camZ);
+      orbit.target.set(tweenObject.targetX, tweenObject.targetY, tweenObject.targetZ);
+      camera.lookAt(new THREE.Vector3(tweenObject.targetX, tweenObject.targetY, tweenObject.targetZ));
+      sunLight.intensity = tweenObject.intensity; 
+      orbit.update();
+    })
+    .onComplete(() => {
+      homeButton.disabled = false;
+      displayContent = true;
+      manageContentDisplay();
+    })
+    .start();
+}
+
+aboutMeButton.onclick = function() {
+  handlePlanetButtonClick('mercury', 'aboutMe', new THREE.Vector3(0, 10, 25), finalIntensity);
+};
+
+experinceButton.onclick = function() {
+  handlePlanetButtonClick('earth', 'experience', new THREE.Vector3(0, 10, 40), finalIntensity);
+};
+
+skillsButton.onclick = function() {
+  handlePlanetButtonClick('saturn', 'skills', new THREE.Vector3(0, 20, 75), saturnIntensity);
+};
+
+projectsButton.onclick = function() {
+  handlePlanetButtonClick('jupiter', 'projects', new THREE.Vector3(0, 20, 75), saturnIntensity);
+};
+
+contactButton.onclick = function() {
+  handlePlanetButtonClick('neptune', 'contact', new THREE.Vector3(0, 20, 55), saturnIntensity);
+};
+
+window.addEventListener('resize', manageContentDisplay);
+
+const dropdownToggle = document.getElementById('dropdownToggle');
+const buttonContainer = document.querySelector('.button-container');
+
+dropdownToggle.addEventListener('click', () => {
+  buttonContainer.classList.toggle('show');
+});
+
+function enableDraggablePanel() {
+  const isSmallScreen = window.innerWidth <= 800;
+
+  if (isSmallScreen) {
+    let isDragging = false;
+    let startY;
+    let startPanelY;
+
+    const panel = document.getElementById('aboutPanel');
+    const thumb = document.querySelector('.panel-thumb');
+
+    thumb.addEventListener('mousedown', (event) => {
+      isDragging = true;
+      startY = event.clientY;
+      startPanelY = panel.getBoundingClientRect().top;
+      document.body.style.cursor = 'grabbing';
+    });
+
+    document.addEventListener('mousemove', (event) => {
+      if (!isDragging) return;
+      const deltaY = event.clientY - startY;
+      let newPanelY = startPanelY + deltaY;
+      const windowHeight = window.innerHeight;
+
+      if (newPanelY > windowHeight - 50) {
+        newPanelY = windowHeight - 50;
+      } else if (newPanelY < windowHeight - panel.offsetHeight) {
+        newPanelY = windowHeight - panel.offsetHeight;
+      }
+
+      panel.style.transform = `translateY(${newPanelY - windowHeight}px)`;
+    });
+
+    document.addEventListener('mouseup', () => {
+      if (!isDragging) return;
+      isDragging = false;
+      document.body.style.cursor = '';
+
+      const currentPanelY = panel.getBoundingClientRect().top;
+      const midpoint = window.innerHeight / 2;
+
+      if (currentPanelY > midpoint) {
+        panel.style.transform = `translateY(100%)`;
+        panel.classList.remove('show');
+      } else {
+        panel.style.transform = `translateY(0)`;
+        panel.classList.add('show');
+      }
+    });
+  }
+}
+
+enableDraggablePanel();
+
+window.addEventListener('resize', enableDraggablePanel);
