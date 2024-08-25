@@ -4,7 +4,7 @@
     <link rel="stylesheet" href="style.css">
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ZK's Planetary Portfolio</title>
+    <title>Planetary Portfolio</title>
     <link rel="icon" type="image/png" href="./image/solar-system.png" />
     <script type="text/javascript" src="./min.js/dat.gui.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.js"></script>
@@ -26,12 +26,10 @@
   <div id="aboutPanel" style="display: none;">
     <div class="panel-thumb"><p>hi</p></div>
     <h2>About Me-rcury</h2>
-    <p>This is where you can display information about yourself.</p>
   </div>
 
   <div id="experincePanel" style="display: none;">
     <h2>Experiences Earth</h2>
-    <p>This is where you can display information about yourself.</p>
   </div>
 
   <div id="projectModal" class="modal">
@@ -41,11 +39,11 @@
               <h1 id="projectTitle">Project Title</h1>
               <p><strong>Tech Stack:</strong> <span id="projectTechStack">React, Node.js, Socket.io</span></p>
               <p><strong>GitHub URL:</strong> <a id="projectLink" href="#" target="_blank">Visit Repository</a></p>
-              <p id="projectDescription">Some detailed description about the project.</p>
+              <p id="projectDescription" style="line-height: 1.6;">Some detailed description about the project.</p>
           </div>
       </div>
-        <span class="nav-arrow left">&lt;</span> 
-        <span class="nav-arrow right">&gt;</span>
+      <span class="nav-arrow left"><img src="image/back.png" class="nav-arrow1"></span>
+      <span class="nav-arrow right"><img src="image/right.png" class="nav-arrow1"></span>
 </div>
 
   <svg id="infoLine" style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; pointer-events: none; z-index: 10;">
@@ -58,10 +56,10 @@
    <div class="button-container">
       <button id="homeButton" class="button">home</button>
       <button id="aboutMeButton" class="button" >about me</button>
-      <button id="experinceButton" class="button">experinces</button>
+      <button id="experinceButton" class="button">experiences</button>
       <button id="projectsButton" class="button">projects</button>
       <button id="skillsButton" class="button">skills</button>
-      <button class="button" onclick="window.open('https://drive.google.com/file/d/1Sl1H2Z4VYP81ueKcZwJdqwofYt-kErCX/view?usp=sharing', '_blank');">resume</button>
+      <button class="button" onclick="window.open('https://drive.google.com/file/d/1Sl1H2Z4VYP81ueKcZwJdqwofYt-kErCX/view?usp=drive_link', '_blank');">resume</button>
       <button id="contactButton" class="button">contact</button>
     </div>
     

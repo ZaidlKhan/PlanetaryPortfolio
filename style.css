@@ -98,7 +98,7 @@ body {
     background: rgba(48, 48, 48, 0.9);
     border-radius: 6px;
     border: 1px solid #444;
-    z-index: 2000;
+    z-index: 800;
 }
 
 @media screen and (max-width: 800px) {
@@ -418,4 +418,10 @@ input:checked + .slider:before {
 
 .fade-in {
     opacity: 1;
+}
+
+.nav-arrow1 {
+    width: 25px;   
+    height: auto; 
+    padding: 1px;
 }

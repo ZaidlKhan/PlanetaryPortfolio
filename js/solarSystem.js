@@ -38,7 +38,7 @@ const contentTemplates = {
         <div class="textdiv"> 
           <img src="./image/profilepic.png" alt="About Me Image" class="profile-pic">
           <p>Hi! I'm Zaid, a third-year student at the University of British Columbia, where I am pursuing a Bachelor's degree in Computer Science and Public Health. My academic journey is dedicated to blending cutting-edge technology with healthcare to improve systems and patient outcomes.<p>
-          <p>I am deeply passionate about using my skills in software development to create innovative solutions that address the complexities of modern healthcare. Outside of my studies, I am fascinated by space exploration and enjoy spending time with my cat, Binoo, who often keeps me company while I code or catch up on the latest tech news.</p>
+          <p>I am deeply passionate about using my skills in software development to create innovative solutions to real world problems. Outside of my studies, I am fascinated by space exploration and enjoy spending time with my cat, Binoo, who often keeps me company while I code or catch up on the latest tech news.</p>
         </div>
   `,
   'experience': `
@@ -84,17 +84,19 @@ const contentTemplates = {
       <div class="textdiv"> 
       <div class="project-container">
       <div class="project-card" data-title="Instagram Messaging App" 
-                                data-description="A real-time messaging app for social media." 
-                                data-techStack="React, Node.js, Socket.io" 
-                                data-githubUrl="https://github.com/yourusername/instagram-messaging">
+                                data-description="JustChat is an innovative real-time messaging application designed to streamline the management of Instagram Direct Messages (DMs). Currently in development, this app provides a focused solution for users who wish to stay connected via Instagram DMs without the distraction of browsing the main Instagram feed. The concept for JustChat was inspired by a personal challenge: my close friend and I found ourselves spending excessive time scrolling through Instagram, yet we could not afford to uninstall the app due to the necessity of staying updated with our DMs, such as managing group projects organized through Instagram. JustChat aims to empower students and other users to maintain essential communications on Instagram efficiently, without the need to engage with the full platform.
+                                &lt;br&gt; I am using React Native for the frontend and Express.js and Node.js for the backend. We have so much more planned for this app, I am thrilled to be a part of it!" 
+                                data-techStack="React Native, Node.js, Express.js" 
+                                data-githubUrl="https://github.com/jchatapp">
           <img src="./image/justchat.png" alt="Project Image">
           <div class="overlay">Instagram Messaging App</div>
       </div>
 
         <div class="project-card" data-title="Planetary Portfolio" 
-                                  data-description="A real-time messaging app for social media." 
+                                  data-description="Welcome to My Planetary Portfolio—the website you are currently exploring! Driven by my passion for space exploration, I decided to create a truly unique and meaningful portfolio represented through a solar system theme. This project presented a significant challenge as I initially had no familiarity with Three.js, the technology that enabled me to render this website in 3D. After dedicating considerable time to mastering Three.js, I succeeded in developing a site that not only showcases my technical skills but also my creativity. I am thrilled with the final outcome and believe it effectively highlights my capabilities.
+                                  &lt;br&gt; I will keep updating the website with my most up-to-date projects and experience and will continue development for mobile support." 
                                   data-techStack="Three.js, HTML, CSS" 
-                                  data-githubUrl="https://github.com/yourusername/instagram-messaging">
+                                  data-githubUrl="https://github.com/ZaidlKhan/PlanetaryPortfolio">
             <img src="./image/saturn-pro.jpg" alt="Project Image">
             <div class="overlay">Planetary Portfolio</div>
         </div>
@@ -117,24 +119,14 @@ const contentTemplates = {
             <div class="overlay">Basketball League Database</div>
         </div>
 
-        <div class="project-card">
+        <div class="project-card" data-title="Greek Alphabet Recognition" 
+                                  data-description="For this project, I developed a deep learning application designed to recognize Greek letters using TensorFlow. This application not only allows users to test their knowledge of Greek letters but also enables them to contribute to enhancing the model by adding more data. Through this initiative, I acquired hands-on experience in constructing neural networks and deepened my understanding of fundamental machine learning concepts." 
+                                  data-techStack="Python, JavaScript, Flask, TensorFlow, Scikit-learn" 
+                                  data-githubUrl="https://github.com/ZaidlKhan/greek_alphabet_recognition">
             <img src="./image/greek.webp" alt="Project Image">
             <div class="overlay">Greek Handwriting Recognition</div>
         </div>
-
-        <div class="project-card">
-            <img src="./image/snake.png" alt="Project Image">
-            <div class="overlay">Intelligent Snake</div>
-        </div>
-
-        <div class="project-card">
-            <img src="./image/maze.jpg" alt="Project Image">
-            <div class="overlay">Maze Solver</div>
-        </div>
-
       </div>
-
-        <!-- Repeat for each project -->
     </div>
   `
 };
@@ -465,6 +457,7 @@ function handleProjectClick(index) {
 }
 
 function openModal(project) {
+  updateNavArrows();
   const modalContent = document.getElementById('projectModal');
   const modalDetails = document.querySelector('.modal-content');
 
@@ -491,18 +484,33 @@ function openModal(project) {
 
 
 document.querySelector('.nav-arrow.left').addEventListener('click', () => {
-    if (currentProjectIndex > 0) {
-        currentProjectIndex -= 1;
-        openModal(projects[currentProjectIndex]);
-    }
+  if (currentProjectIndex > 0) {
+      currentProjectIndex -= 1;
+      openModal(projects[currentProjectIndex]);
+  }
 });
 
 document.querySelector('.nav-arrow.right').addEventListener('click', () => {
-    if (currentProjectIndex < projects.length - 1) {
-        currentProjectIndex += 1;
-        openModal(projects[currentProjectIndex]);
-    }
+  if (currentProjectIndex < projects.length - 1) {
+      currentProjectIndex += 1;
+      openModal(projects[currentProjectIndex]);
+  }
 });
+
+function updateNavArrows() {
+  const leftArrow = document.querySelector('.nav-arrow.left');
+  const rightArrow = document.querySelector('.nav-arrow.right');
+  if (currentProjectIndex === 0) {
+      leftArrow.style.display = 'none';
+  } else {
+      leftArrow.style.display = 'block';
+  }
+  if (currentProjectIndex === projects.length - 1) {
+      rightArrow.style.display = 'none';
+  } else {
+      rightArrow.style.display = 'block';
+  }
+}
 
 function updateLine() {
   const currentPlanet = toScreenPosition(getPlanetByName(activeButton), camera);
@@ -656,6 +664,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const skillsButton = document.getElementById('skillsButton');
   const contactButton = document.getElementById('contactButton');
   const projectsButton = document.getElementById('projectsButton');
+  updateNavArrows();
 
   const finalIntensity = 0.8;
   const saturnIntensity = 0.65; 
