@@ -35,7 +35,9 @@ let enableOrbiting = true;
 const contentTemplates = {
   'aboutMe': `
       <h2>About Me-rcury</h2>
-        <div class="textdiv"> 
+        <div class="textdiv">
+        <div class="panel-thumb">
+        </div> 
           <img src="./image/profilepic.png" alt="About Me Image" class="profile-pic">
           <p>Hi! I'm Zaid, a third-year student at the University of British Columbia, where I am pursuing a Bachelor's degree in Computer Science and Public Health. My academic journey is dedicated to blending cutting-edge technology with healthcare to improve systems and patient outcomes.<p>
           <p>I am deeply passionate about using my skills in software development to create innovative solutions to real world problems. Outside of my studies, I am fascinated by space exploration and enjoy spending time with my cat, Binoo, who often keeps me company while I code or catch up on the latest tech news.</p>
@@ -44,6 +46,8 @@ const contentTemplates = {
   'experience': `
       <h2>Experiences on Earth</h2>
       <div class="experience">
+          <div class="panel-thumb">
+            </div> 
             <div class="textdiv"> 
             <h3>Provincial Health Services Authority</h3>
             <p>Aug 2024 - Present<br>
@@ -56,6 +60,8 @@ const contentTemplates = {
   'skills': `
       <h2>Saturnian Skill Set</h2>
       <div class="experience"> 
+      <div class="panel-thumb">
+      </div> 
       <h3>Languages and Databases</h3>
       <p>Python, Java, HTML/CSS, C/C++, JavaScript, Swift, Oracle, MySQL, MongoDB<p>
       <h3>Frameworks and Libraries</h3>
@@ -1005,7 +1011,15 @@ function handlePlanetButtonClick(planetName, contentKey, cameraOffset, finalInte
 
   const initialCameraPosition = camera.position.clone();
   const initialTarget = orbit.target.clone();
-  const finalCameraPosition = planetPosition.clone().add(cameraOffset);
+
+  // Adjust Y offset for smaller screens
+  let adjustedCameraOffset = cameraOffset.clone();
+  const isSmallScreen = window.innerWidth <= 800;  // Define screen size threshold
+  if (isSmallScreen) {
+    adjustedCameraOffset.y += 20;  // Move the camera up more for small screens
+  }
+
+  const finalCameraPosition = planetPosition.clone().add(adjustedCameraOffset);
 
   const tweenObject = {
     camX: initialCameraPosition.x,
@@ -1066,65 +1080,21 @@ contactButton.onclick = function() {
 
 window.addEventListener('resize', manageContentDisplay);
 
-const dropdownToggle = document.getElementById('dropdownToggle');
-const buttonContainer = document.querySelector('.button-container');
 
-dropdownToggle.addEventListener('click', () => {
-  buttonContainer.classList.toggle('show');
+
+document.addEventListener('DOMContentLoaded', function() {
+  const dropdownToggle = document.getElementById('dropdownToggle');
+  const buttonContainer = document.querySelector('.button-container');
+  const menuItems = buttonContainer.querySelectorAll('.button');
+
+  dropdownToggle.addEventListener('click', () => {
+    buttonContainer.classList.toggle('show');
+  });
+
+  // Close dropdown menu on selection
+  menuItems.forEach(item => {
+    item.addEventListener('click', () => {
+      buttonContainer.classList.remove('show');
+    });
+  });
 });
-
-function enableDraggablePanel() {
-  const isSmallScreen = window.innerWidth <= 800;
-
-  if (isSmallScreen) {
-    let isDragging = false;
-    let startY;
-    let startPanelY;
-
-    const panel = document.getElementById('aboutPanel');
-    const thumb = document.querySelector('.panel-thumb');
-
-    thumb.addEventListener('mousedown', (event) => {
-      isDragging = true;
-      startY = event.clientY;
-      startPanelY = panel.getBoundingClientRect().top;
-      document.body.style.cursor = 'grabbing';
-    });
-
-    document.addEventListener('mousemove', (event) => {
-      if (!isDragging) return;
-      const deltaY = event.clientY - startY;
-      let newPanelY = startPanelY + deltaY;
-      const windowHeight = window.innerHeight;
-
-      if (newPanelY > windowHeight - 50) {
-        newPanelY = windowHeight - 50;
-      } else if (newPanelY < windowHeight - panel.offsetHeight) {
-        newPanelY = windowHeight - panel.offsetHeight;
-      }
-
-      panel.style.transform = `translateY(${newPanelY - windowHeight}px)`;
-    });
-
-    document.addEventListener('mouseup', () => {
-      if (!isDragging) return;
-      isDragging = false;
-      document.body.style.cursor = '';
-
-      const currentPanelY = panel.getBoundingClientRect().top;
-      const midpoint = window.innerHeight / 2;
-
-      if (currentPanelY > midpoint) {
-        panel.style.transform = `translateY(100%)`;
-        panel.classList.remove('show');
-      } else {
-        panel.style.transform = `translateY(0)`;
-        panel.classList.add('show');
-      }
-    });
-  }
-}
-
-enableDraggablePanel();
-
-window.addEventListener('resize', enableDraggablePanel);
