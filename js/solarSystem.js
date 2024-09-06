@@ -49,10 +49,7 @@ const contentTemplates = {
           <div class="panel-thumb">
             </div> 
             <div class="textdiv"> 
-            <h3>Provincial Health Services Authority</h3>
-            <p>Aug 2024 - Present<br>
-            Developed and maintained Web APIs using ASP.NET Web API, SharePoint REST API, SQL Server, and Entity Framework to ensure seamless integration, high-performance database management, and effective content collaboration within clinical applications.<p>
-            <h3>Data Engineering Intern at Qiniq</h3>
+           <h3>Data Engineering Intern at Qiniq</h3>
             <p>Apr 2024 - Aug 2024<br>Developed and implemented a robust data automation pipeline using Python and Azure cloud services to <span class="highlight"><strong>extract and transform data from the Starlink API</strong></span>, facilitating real-time network usage tracking in Nunavut. This included designing interactive Power BI dashboards that provided actionable insights to support strategic business decisions.<p>
             </div>
       </div>
