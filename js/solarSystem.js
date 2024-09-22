@@ -147,42 +147,47 @@ const cubeTexture = cubeTextureLoader.load([
 scene.background = cubeTexture;
 
 //Create stars in background
-function createStars(count, size) {
+function createStars(count, minSize, maxSize) {
   const starsGeometry = new THREE.BufferGeometry();
   const positions = new Float32Array(count * 3); 
   const colors = new Float32Array(count * 3);
+  const sizes = new Float32Array(count);
+
   for (let i = 0; i < count; i++) {
-    const r = 500 * Math.random() + 4500; 
-      const theta = 2 * Math.PI * Math.random();
-      const phi = Math.acos(2 * Math.random() - 1);
+    const r = 500 * Math.random() + 4500;
+    const theta = 2 * Math.PI * Math.random();
+    const phi = Math.acos(2 * Math.random() - 1);
 
-      const index = 3 * i;
-      positions[index] = r * Math.sin(phi) * Math.cos(theta); 
-      positions[index + 1] = r * Math.sin(phi) * Math.sin(theta);
-      positions[index + 2] = r * Math.cos(phi);
+    const index = 3 * i;
+    positions[index] = r * Math.sin(phi) * Math.cos(theta); 
+    positions[index + 1] = r * Math.sin(phi) * Math.sin(theta);
+    positions[index + 2] = r * Math.cos(phi);
 
-      const brightness = 0.5 + 0.5 * Math.random(); 
-      colors[index] = brightness;   
-      colors[index + 1] = brightness;   
-      colors[index + 2] = brightness;  
+    const brightness = 0.3 + Math.random() * 0.7; 
+    colors[index] = brightness;   // R
+    colors[index + 1] = brightness; // G
+    colors[index + 2] = brightness; // B
+
+    sizes[i] = minSize + Math.random() * (maxSize - minSize); 
   }
 
   starsGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
   starsGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+  starsGeometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
 
   const starsMaterial = new THREE.PointsMaterial({
-      size: size,
-      sizeAttenuation: true,
-      vertexColors: true,
-      transparent: true,
-      opacity: 0.8
+    size: 1, 
+    sizeAttenuation: true,
+    vertexColors: true, 
+    transparent: true,
+    opacity: 0.8 
   });
 
   return new THREE.Points(starsGeometry, starsMaterial);
 }
 
 //add stars to background
-const starField = createStars(10000, 1);
+const starField = createStars(5000);
 scene.add(starField);
 
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -1009,11 +1014,10 @@ function handlePlanetButtonClick(planetName, contentKey, cameraOffset, finalInte
   const initialCameraPosition = camera.position.clone();
   const initialTarget = orbit.target.clone();
 
-  // Adjust Y offset for smaller screens
   let adjustedCameraOffset = cameraOffset.clone();
-  const isSmallScreen = window.innerWidth <= 800;  // Define screen size threshold
+  const isSmallScreen = window.innerWidth <= 800; 
   if (isSmallScreen) {
-    adjustedCameraOffset.y += 20;  // Move the camera up more for small screens
+    adjustedCameraOffset.y += 20;  
   }
 
   const finalCameraPosition = planetPosition.clone().add(adjustedCameraOffset);
@@ -1088,7 +1092,6 @@ document.addEventListener('DOMContentLoaded', function() {
     buttonContainer.classList.toggle('show');
   });
 
-  // Close dropdown menu on selection
   menuItems.forEach(item => {
     item.addEventListener('click', () => {
       buttonContainer.classList.remove('show');
